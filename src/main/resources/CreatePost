@@ -1,0 +1,31 @@
+@Override
+	public PostDto createPost(PostDto dto, Integer userId, Integer catId) {
+		
+		//get UserId from userRepo
+		User userData = userRepo.findById(userId).orElseThrow(
+				() -> new ResourceNotFoundExcption("user", "userId", userId));
+		
+		//get Category id from catRepo
+	    Category categoryData = catRepo.findById(catId).orElseThrow( 
+		         () -> new ResourceNotFoundExcption("category", "categoryId", catId));
+	    
+	  //conevert dto post
+		Post post = mapper.map(dto, Post.class);
+		
+		//get data from post
+		
+		post.setImageName("default.png");
+		post.setAddedDate(new Date());
+		
+		//set user data from what return userRepo findById object
+		post.setUser(userData);
+		
+		//set category data from what return catRepo findById object
+		post.setCategory(categoryData);
+		
+		//finally save that post in save metho
+		Post newPost = postRepo.save(post);
+		
+		//in return take mapper.map to save what ave return object so save that with Post.class
+		return mapper.map(newPost, PostDto.class);
+	}
